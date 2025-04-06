@@ -11,7 +11,7 @@ if (!admin.apps.length) {
     credential: admin.credential.cert({
       projectId: process.env.FIREBASE_PROJECT_ID,
       clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-      privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+      privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\n/g, '\n'),
     }),
   });
 }
@@ -69,6 +69,11 @@ app.get('/test-notification/:name', async (req, res) => {
         title: '🔔 Test Notification',
         body: `Hello ${data.name || 'User'}, this is a test!`,
       },
+      data: {
+        click_action: 'FLUTTER_NOTIFICATION_CLICK',
+        from: 'System',
+        test: 'true',
+      },
     };
 
     await admin.messaging().sendToDevice(token, payload);
@@ -102,6 +107,11 @@ app.post('/send-message-notification', async (req, res) => {
       notification: {
         title: `رسالة جديدة من ${fromName}`,
         body: message,
+      },
+      data: {
+        click_action: 'FLUTTER_NOTIFICATION_CLICK',
+        from: fromName,
+        screen: 'chat',
       },
     };
 
